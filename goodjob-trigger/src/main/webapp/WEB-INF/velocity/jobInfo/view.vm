@@ -1,0 +1,248 @@
+<div class="page-header">
+  <h1><small>任务详情</small></h1>
+</div>
+
+<form id="form" class="form-horizontal" role="form" method="post">
+	<fieldset disabled>
+    	<div class="form-group">
+    		<label for="name" class="col-sm-2 control-label">任务名称:</label>
+    		<div class="col-sm-4">
+    			<input type="text"  class="form-control" id="name" name="name" value="$!data.name" placeholder="必须填写" autocomplete="off" />
+    		</div>
+    	</div>
+    	<div class="form-group">
+    		<label for="group" class="col-sm-2 control-label">任务分组:</label>
+    		<div class="col-sm-4">
+    			<input type="text"  class="form-control" id="group" name="group" value="$!data.group" placeholder="必须填写" autocomplete="off"/>
+    		</div>
+    	</div>
+    	<div class="form-group">
+    		<label for="type" class="col-sm-2 control-label">任务类型:</label>
+    		<div class="col-sm-4">
+    			<select  id="type" name="type" class="form-control">
+    				<option value="ONCE"  >
+    					一次 (指定时间)
+                    </option>
+    				<option value="REPEAT" #if("$data.type" == "REPEAT") selected  #end >
+    					多次 (Cron表达式)
+                    </option>
+                </select>
+    		</div>
+    	</div>
+    	<div id="timeDiv" class="form-group">
+    		<label for="time" class="col-sm-2 control-label">触发时间:</label>
+    		<div class="col-sm-4">
+    			<input type="text"  class="form-control" id="time" name="time" value="$!datetool.format('yyyy-MM-dd HH:mm:ss',$!data.time)" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',skin:'whyGreen'})" placeholder="必须填写" autocomplete="off"/>
+    		</div>
+    	</div>
+    	<div id="cronDiv" class="form-group" style="display:none">
+    		<label for="cron" class="col-sm-2 control-label">Cron表达式:</label>
+    		<div class="col-sm-4">
+    			<input type="text"  class="form-control" id="cron" name="cron" value="$!data.cron" placeholder="必须填写" autocomplete="off" />
+    			
+    		</div>
+    	</div>
+    	<div class="form-group">
+    		<label for="urls" class="col-sm-2 control-label">目标服务器 URL:</label>
+    		<div class="col-sm-4">
+    			<input type="text"  class="form-control" id="urls" name="urls" value="$!data.urls" placeholder="必须填写, 多条请用半角逗号分割" autocomplete="off" />
+    		</div>
+    	</div>
+    	<div class="form-group">
+    		<label for="classPath" class="col-sm-2 control-label">任务类全路径:</label>
+    		<div class="col-sm-4">
+    			<input type="text"  class="form-control" id="classPath" name="classPath" value="$!data.classPath" placeholder="必须填写, 并且需为Spring Bean." autocomplete="off" />
+    		</div>
+    	</div>
+    	<div class="form-group">
+    		<label for="invokePolicy" class="col-sm-2 control-label">调用策略:</label>
+        	<div class="col-sm-4">
+        		<div class="radio radio-inline">
+        			<label>
+        				<input type="radio" id="classPathPriority" name="invokePolicy" value="PRIORITY" 
+    						#if(!$data.invokePolicy || "$data.invokePolicy" == "PRIORITY")
+    							checked  
+    						#end 
+    					/>
+        				顺序优先
+                    </label>
+                </div>
+        		<div class="radio radio-inline">
+        			<label>
+            			<input type="radio" id="classPathRandom" name="invokePolicy" value="RANDOM" 
+    					#if("$data.invokePolicy" == "RANDOM")
+    						checked  
+    					#end 
+    					/>
+            			随机选取
+                    </label>
+        		</div>
+    		</div>
+    	</div>
+    	<div class="form-group">
+    		<label for="activity" class="col-sm-2 control-label">是否激活:</label>
+        	<div class="col-sm-4">
+        		<div class="checkbox">
+        			<label>
+        				<input type="checkbox"  id="activity" name="activity"
+    						#if(!$data || $data.activity)
+    							checked
+    						#end
+    					/>
+        				激活
+                    </label>
+                </div>
+    		</div>
+        </div>
+        <div class="form-group inline">
+            <label for="checkFinish" class="col-sm-2 control-label">是否每日检查完成情况:</label>
+            <div class="col-sm-1">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"  id="checkFinish" name="checkFinish"
+							#if($data && $data.isCheckFinish())
+                               checked
+							#end
+                                />
+                        检查
+                    </label>
+                </div>
+            </div>
+            <div class="input-group" >
+                <lable class="control-label" >检查时间：</lable>
+                <input type="hidden" id="checkFinishTime" name="checkFinishTime" value="$!data.checkFinishTime"/>
+                <select  class="form-control" style="width: inherit" id="checkFinishTimeH" name="checkFinishTimeH" disabled >
+                    <option value="00">00点</option>
+                    <option value="01">01点</option>
+                    <option value="02">02点</option>
+                    <option value="03">03点</option>
+                    <option value="04">04点</option>
+                    <option value="05">05点</option>
+                    <option value="06">06点</option>
+                    <option value="07">07点</option>
+                    <option value="08">08点</option>
+                    <option value="09">09点</option>
+                    <option value="10">10点</option>
+                    <option value="11">11点</option>
+                    <option value="12">12点</option>
+                    <option value="13">13点</option>
+                    <option value="14">14点</option>
+                    <option value="15">15点</option>
+                    <option value="16">16点</option>
+                    <option value="17">17点</option>
+                    <option value="18">18点</option>
+                    <option value="19">19点</option>
+                    <option value="20">20点</option>
+                    <option value="21">21点</option>
+                    <option value="22">22点</option>
+                    <option value="23">23点</option>
+                </select>
+                <select  class="form-control" style="width: inherit;" id="checkFinishTimeM" name="checkFinishTimeM" disabled>
+                    <option value="00">00分</option>
+                    <option value="10">10分</option>
+                    <option value="20">20分</option>
+                    <option value="30">30分</option>
+                    <option value="40">40分</option>
+                    <option value="50">50分</option>
+                </select>
+                <label class="control-label" style="margin-left: 50px" >如果选择每日检查，则在指定时间，判断任务在当天是否执行成功过，没有则发短信报警</label>
+            </div>
+        </div>
+		<div class="form-group">
+    		<label for="createTime" class="col-sm-2 control-label">创建时间:</label>
+    		<div class="col-sm-4">
+				
+    			<input type="text"  class="form-control" id="createTime" name="createTime" value="$!datetool.format('yyyy-MM-dd HH:mm:ss',$!data.createTime)" autocomplete="off" />
+    		</div>
+    	</div>
+		<div class="form-group">
+    		<label for="modifyTime" class="col-sm-2 control-label">最后修改时间:</label>
+    		<div class="col-sm-4">
+    			<input type="text"  class="form-control" id="modifyTime" name="modifyTime" value="$!datetool.format('yyyy-MM-dd HH:mm:ss',$!data.modifyTime)" autocomplete="off" />
+    		</div>
+    	</div>
+		<div class="form-group">
+    		<label for="param" class="col-sm-2 control-label">参数:</label>
+        	<div class="col-sm-4">
+    			<textarea  class="form-control col-sm-10" style="resize:none;" rows="5" id="param" name="param" autocomplete="off" placeholder="最多 255 个字符" />$!data.param</textarea>
+    		</div>
+  	  	</div>
+    	<div class="form-group">
+    		<label for="desc" class="col-sm-2 control-label">描述:</label>
+        	<div class="col-sm-4">
+    			<textarea  class="form-control col-sm-10" style="resize:none;" rows="5" id="desc" name="desc" autocomplete="off" />$!data.desc</textarea>
+    		</div>
+        </div>
+        <div class="form-group">
+            <label for="ownerPhone" class="col-sm-2 control-label">负责人手机号:</label>
+            <div class="col-sm-4">
+                <input type="text"  class="form-control" id="ownerPhone" name="ownerPhone" value="$!data.ownerPhone" autocomplete="off" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="latestTriggerTime" class="col-sm-2 control-label">最近一次触发时间:</label>
+            <div class="col-sm-4">
+                <input type="text"  class="form-control" id="latestTriggerTime" name="latestTriggerTime" value="$!datetool.format('yyyy-MM-dd HH:mm:ss',$!data.latestTriggerTime)" autocomplete="off" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="latestServerAddress" class="col-sm-2 control-label">最近一次服务端地址:</label>
+            <div class="col-sm-4">
+                <input type="text"  class="form-control" id="latestServerAddress" name="latestServerAddress" value="$!data.latestServerAddress" autocomplete="off" />
+            </div>
+        </div>
+	</fieldset>
+	<div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <a id="backBtn" href="javascript:;">
+                返回
+            </a>
+            <a id="editBtn" href="javascript:;">
+                编辑任务
+            </a>
+        </div>
+	</div>
+</form>
+
+<script >
+	$("#type").change(function(){
+		if("ONCE" == $(this).val()){
+			$("#timeDiv").show();
+			$("#cronDiv").hide();
+		}else{
+			$("#timeDiv").hide();
+			$("#cronDiv").show();
+		}
+	});
+
+    // 回显 checkFinishTime
+    var checkFinishTime = "$!data.checkFinishTime";
+    if(checkFinishTime && checkFinishTime.concat(":")) {
+        var hm = checkFinishTime.split(":");
+        var h = hm[0];
+        var m = hm[1];
+
+        $("#checkFinishTimeH > option").each(function(){
+            if($(this).val() == h) {
+                $(this).attr("selected", "selected");
+            }
+        })
+
+        $("#checkFinishTimeM > option").each(function(){
+            if($(this).val() == m) {
+                $(this).attr("selected", "selected");
+            }
+        })
+    }
+	
+	// 页面载入时,触发一次,因为回传已有值.
+	$("#type").change();
+	
+	$("#backBtn").click(function(){
+		history.go(-1);
+	});
+
+    $("#editBtn").click(function(){
+        window.location.href = "$ac.contextPath/jobinfo/toedit/${data.id}.htm";
+    });
+</script>

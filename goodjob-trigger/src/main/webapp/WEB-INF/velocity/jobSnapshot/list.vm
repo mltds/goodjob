@@ -1,0 +1,226 @@
+<div class="page-header">
+  <h1><small>任务执行信息</small></h1>
+</div>
+
+<nav class="navbar navbar-default" role="navigation">
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <form id="searchForm" action="$ac.contextPath/jobsnapshot/list.htm" method="post" class="navbar-form navbar-left form-inline" role="search">
+      <div class="form-group">
+		<input type="text" class="form-control" placeholder="Name" name="name" value="$!p.name" >
+      </div>
+	  &nbsp;&nbsp;&nbsp;
+      <div class="form-group">
+		<input type="text" class="form-control" placeholder="Grop" name="group" value="$!p.group" >
+      </div>
+	  &nbsp;&nbsp;&nbsp;
+	  <div class="form-group">
+			<select  id="status" name="status" class="form-control">
+				<option value="" >
+					All Status
+                </option>
+				<option value="INIT" #if("$!p.status" == "INIT") selected  #end >
+					INIT
+                </option>
+				<option value="INVOKING" #if("$!p.status" == "INVOKING") selected  #end >
+					INVOKING
+                </option>
+				<option value="EXECUTING" #if("$!p.status" == "EXECUTING") selected  #end >
+					EXECUTING
+                </option>
+				<option value="COMPLETED" #if("$!p.status" == "COMPLETED") selected  #end >
+					COMPLETED
+                </option>
+				<option value="ERROR" #if("$!p.status" == "ERROR") selected  #end >
+					ERROR
+                </option>
+            </select>
+      </div>
+	  &nbsp;&nbsp;&nbsp;
+      <button type="submit" class="btn btn-default">Search</button>
+	  <button type="button" id="cleanOneWeekBtn" style="margin-left: 200px;" class="btn btn-info">清理一周前的数据</button>
+	  <button type="button" id="cleanOneMonthBtn" style="margin-left: 100px;" class="btn btn-info">清理一个月前的数据</button>
+    </form>
+  </div><!-- /.navbar-collapse -->
+</nav>
+
+<h4 >
+	<small>最多显示最近100条记录.</small>
+</h4>
+
+
+<table class="table table-condensed table-bordered table-striped" style="text-align:center" >
+	<thead>
+	<tr style="text-align:center" >
+		<th style="text-align:center" >
+			ID
+        </th>
+		<th style="text-align:center" >
+			任务名称
+        </th>
+		<th style="text-align:center" >
+			任务分组
+        </th>
+		<th style="text-align:center" >
+			状态
+        </th>
+		<th style="text-align:center" >
+			任务服务器 IP
+        </th>
+		<th style="text-align:center" >
+			任务耗时(秒)
+        </th>
+		<th style="text-align:center" >
+			创建时间
+        </th>
+		<th style="text-align:center" >
+			实际开始时间
+        </th>
+        <th style="text-align:center" >
+            实际结束时间
+        </th>
+		<th style="width:55px;text-align:center" >
+			停止
+        </th>
+		<th style="width:55px;text-align:center" >
+			详情
+        </th>
+        <th style="width:55px;text-align:center" >
+            任务
+        </th>
+    </tr>
+	</thead>
+	#foreach($e in $data )
+	<tr >
+		<td >
+			$!e.id
+        </td>
+		<td >
+			$!e.name
+        </td>
+		<td >
+			$!e.group
+        </td>
+		<td #if("$!e.status" == "ERROR") 
+				style="background-color:#FF8888"
+			#elseif("$!e.status" == "EXECUTING")
+				style="background-color:#99FF99"
+			#end>
+			$!e.status
+        </td>
+		<td >
+			$!e.ip
+        </td>
+		<td >
+			$!e.timeConsume
+        </td>
+		<td >
+			$!datetool.format('yyyy-MM-dd HH:mm:ss',$!e.createTime)
+        </td>
+        <td >
+			$!datetool.format('yyyy-MM-dd HH:mm:ss',$!e.actualStartTime)
+        </td>
+		<td >
+			$!datetool.format('yyyy-MM-dd HH:mm:ss',$!e.actualFinishTime)
+        </td>
+		<td align="center">
+			#if("$!e.status" == "EXECUTING")
+				<button type="stopButton" class="btn btn-default btn" value="$e.id" onclick="confirmStop($e.id)">
+					<span class="glyphicon glyphicon-stop"></span>
+				</button>
+			#else
+                <p class="glyphicon glyphicon-cloud-download" style="padding-top: 4px"></p>
+			#end
+        </td>
+		
+		<td >
+			<a href="$ac.contextPath/jobsnapshot/view/${e.id}.htm">
+    			<button id="viewBtn" type="button" class="btn btn-default btn"">
+    				<span class="glyphicon glyphicon-eye-open"></span> 
+    			</button>
+			</a>
+        </td>
+        <td >
+            <a href="$ac.contextPath/jobinfo/view/${e.jobInfoId}.htm">
+                <button id="viewBtn" type="button" class="btn btn-default btn"">
+                    <span class="glyphicon glyphicon-eye-open"></span>
+                </button>
+            </a>
+        </td>
+    </tr>
+	#end
+</table>
+
+#parse("/commons/alert.vm")
+#parse("/commons/confirm.vm")
+
+<script type="text/javascript">
+
+	// 隐藏成功提示.
+	$("#alert-success").hide();
+
+	var liArray = $("#navBarUl li");
+	jQuery.each(liArray, function(i,n){
+			$(n).removeClass("active");
+	});
+	
+	$("#jobSnapshotListLi").addClass("active");
+	
+	// clean one week
+	$("#cleanOneWeekBtn").click(function(){
+		showConfirm("清理数据","您确定要清理一周前的数据吗? 建议只清理一个月前的数据,您还要继续吗?","不","是滴",cleanOneWeek);
+	});
+	
+	function cleanOneWeek(){
+		jQuery.getJSON("$ac.contextPath/jobsnapshot/clean/oneweek.json", function(json){
+			if(json.status ==0){
+				$("#searchForm").submit();
+			}else{
+				showError(json.errorMsg);
+			}
+        });
+	}
+	
+	// clean one month
+	$("#cleanOneMonthBtn").click(function(){
+		showConfirm("清理数据","您确定要清理一个月前的数据吗?","不","是滴",cleanOneMonth);
+	});
+	
+	function cleanOneMonth(){
+		jQuery.getJSON("$ac.contextPath/jobsnapshot/clean/onemonth.json", function(json){
+			if(json.status ==0){
+				$("#searchForm").submit();
+			}else{
+				showError(json.errorMsg);
+			}
+        });
+	}
+	
+	
+	// 确定是否停止这个JOB
+	function confirmStop(id){
+		showConfirm("大侠,  确定停止这次任务咯?", "注意: 只有继承了AbstractJob, 同时通过isTerminated()判断是否终止的任务, 才能完美停止. 其他JOB, 小主我不保证完美停止!!!", 
+			"Close" , "Submit" , stopJobInfo, id);
+	}
+	
+	
+	// 停止job请求
+	function stopJobInfo(id){
+    	jQuery.getJSON("$ac.contextPath/jobsnapshot/stop/" + id, function(json){
+			
+    		if(json.status==0){
+				showModelText("成功!", json.stopDetail, refreshPage);
+    		} else{
+    			showModelText("失败!", json.errorMsg, refreshPage);
+    		}
+			
+        });
+	}
+	
+	
+	// 刷新当前页面
+	function refreshPage() {
+		$("#searchForm").submit();
+	}
+	
+</script>

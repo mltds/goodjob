@@ -1,0 +1,138 @@
+<div class="page-header">
+  <h1><small>任务历史信息</small></h1>
+</div>
+
+<nav class="navbar navbar-default" role="navigation">
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <form id="searchForm" action="$ac.contextPath/jobinfohistory/list.htm" method="post" class="navbar-form navbar-left form-inline" role="search">
+      <div class="form-group">
+		<input id="jobInfoName" type="text" class="form-control" placeholder="Name" name="name" value="$!p.name" >
+      </div>
+	  &nbsp;&nbsp;&nbsp;
+      <div class="form-group">
+		<input id="jobInfoGroup" type="text" class="form-control" placeholder="Grop" name="group" value="$!p.group" >
+      </div>
+	  &nbsp;&nbsp;&nbsp;
+      <button type="submit" class="btn btn-default">Search</button>
+    </form>
+  </div><!-- /.navbar-collapse -->
+</nav>
+
+<h4 >
+    <small>最多显示最近100条记录.</small>
+</h4>
+
+<table class="table table-condensed table-bordered table-striped" style="text-align:center" >
+	<thead>
+	<tr style="text-align:center" >
+		<th style="text-align:center" >
+			ID
+        </th>
+		<th style="text-align:center" >
+			任务ID
+        </th>
+		<th style="text-align:center" >
+			任务名称
+        </th>
+		<th style="text-align:center" >
+			任务分组
+        </th>
+		<th style="text-align:center" >
+			任务类型
+        </th>
+		<th style="text-align:center" >
+			触发时间
+        </th>
+		<th style="text-align:center" >
+			Cron表达式
+        </th>
+		<th style="text-align:center" >
+			目标服务器 URL
+        </th>
+		<th style="text-align:center" >
+			任务类全路径
+        </th>
+		<th style="text-align:center" >
+			调用策略
+        </th>
+		<th style="text-align:center" >
+			是否激活
+        </th>
+		<th style="width:55px;text-align:center" >
+			详情
+        </th>
+    </tr>
+	</thead>
+	#foreach($e in $data )
+	<tr >
+		<td >
+			$!e.id
+        </td>
+		<td >
+			$!e.jobInfoId
+        </td>
+		<td >
+			$!e.name
+        </td>
+		<td >
+			$!e.group
+        </td>
+		<td >
+			$!e.type
+        </td>
+		<td >
+			$!datetool.format('yyyy-MM-dd HH:mm:ss',$!e.time)
+        </td>
+		<td >
+			$!e.cron
+        </td>
+		<td >
+			$!e.urls
+        </td>
+		<td >
+			$!e.classPath
+        </td>
+		<td >
+			$!e.invokePolicy
+        </td>
+		<td >
+			$!e.activity
+        </td>
+		<td >
+			<a href="$ac.contextPath/jobinfohistory/view/${e.id}.htm">
+    			<button id="viewBtn" type="button" class="btn btn-default btn" onclick="view()">
+    				<span class="glyphicon glyphicon-eye-open"></span> 
+    			</button>
+			</a>
+        </td>
+    </tr>
+	#end
+</table>
+<!-- 
+<ul class="pagination">
+	<li class="disabled">
+		<a href="#">&laquo;</a>
+	</li>
+	<li class="active">
+		<a href="#">1 <span class="sr-only">(current)</span></a>
+	</li>
+	<li >
+		<a href="#">2 <span class="sr-only">(current)</span></a>
+	</li>
+	<li>
+		<a href="#">&raquo;</a>
+	</li>
+</ul>
+-->
+
+
+<script type="text/javascript">
+
+	var liArray = $("#navBarUl li");
+	jQuery.each(liArray, function(i,n){
+			$(n).removeClass("active");
+	});
+	$("#jobInfoHistoryListLi").addClass("active");
+
+</script>

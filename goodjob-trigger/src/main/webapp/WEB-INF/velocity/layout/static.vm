@@ -1,0 +1,17 @@
+<!-- jquery -->
+<script type="text/javascript" src="${ac.contextPath}/static/jquery/jquery-1.11.0.min.js"></script>
+
+<!-- my97 -->
+<script type="text/javascript" src="${ac.contextPath}/static/My97DatePicker/WdatePicker.js"></script>
+
+<!-- bootstrap -->
+<script type="text/javascript" src="${ac.contextPath}/static/bootstrap/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="${ac.contextPath}/static/bootstrap/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="${ac.contextPath}/static/bootstrap/css/bootstrap-theme.min.css" type="text/css" />
+
+<!-- easydialog -->
+<script type="text/javascript" src="${ac.contextPath}/static/easydialog/js/easydialog.min.js"></script>
+<link rel="stylesheet" href="${ac.contextPath}/static/easydialog/css/easydialog.css" type="text/css" />
+
+
+

@@ -1,0 +1,127 @@
+<div class="page-header">
+  <h1><small>任务执行详情</small></h1>
+</div>
+
+<form id="form" class="form-horizontal" role="form" method="post">
+	<fieldset disabled>
+		<div class="form-group">
+    		<label for="id" class="col-sm-2 control-label">ID:</label>
+    		<div class="col-sm-4">
+    			<input type="text"  class="form-control" id="id" name="id" value="$!data.id" autocomplete="off" />
+    		</div>
+    	</div>
+		<div class="form-group">
+    		<label for="jobInfoId" class="col-sm-2 control-label">任务ID:</label>
+    		<div class="col-sm-4">
+    			<input type="text"  class="form-control" id="jobInfoId" name="jobInfoId" value="$!data.jobInfoId" autocomplete="off" />
+    		</div>
+    	</div>
+    	<div class="form-group">
+    		<label for="name" class="col-sm-2 control-label">任务名称:</label>
+    		<div class="col-sm-4">
+    			<input type="text"  class="form-control" id="name" name="name" value="$!data.name" autocomplete="off" />
+    		</div>
+    	</div>
+    	<div class="form-group">
+    		<label for="group" class="col-sm-2 control-label">任务分组:</label>
+    		<div class="col-sm-4">
+    			<input type="text"  class="form-control" id="group" name="group" value="$!data.group" autocomplete="off"/>
+    		</div>
+    	</div>
+		<div class="form-group">
+    		<label for="status" class="col-sm-2 control-label">当前状态:</label>
+    		<div class="col-sm-4">
+    			<input type="text"  class="form-control" id="status" name="status" value="$!data.status" autocomplete="off"/>
+    		</div>
+    	</div>
+		<div class="form-group">
+    		<label for="timeConsume" class="col-sm-2 control-label">任务耗时(秒):</label>
+    		<div class="col-sm-4">
+    			<input type="text"  class="form-control" id="timeConsume" name="timeConsume" value="$!data.timeConsume" autocomplete="off"/>
+    		</div>
+    	</div>
+		<div class="form-group">
+    		<label for="ip" class="col-sm-2 control-label">IP:</label>
+    		<div class="col-sm-4">
+    			<input type="text"  class="form-control" id="ip" name="ip" value="$!data.ip" autocomplete="off"/>
+    		</div>
+    	</div>
+		<div class="form-group">
+    		<label for="url" class="col-sm-2 control-label">URL:</label>
+    		<div class="col-sm-4">
+    			<input type="text"  class="form-control" id="url" name="url" value="$!data.url" autocomplete="off"/>
+    		</div>
+    	</div>
+			<div class="form-group">
+    		<label for="createTime" class="col-sm-2 control-label">创建时间:</label>
+    		<div class="col-sm-4">
+				
+    			<input type="text"  class="form-control" id="createTime" name="createTime" value="$!datetool.format('yyyy-MM-dd HH:mm:ss',$!data.createTime)" autocomplete="off" />
+    		</div>
+    	</div>
+		<div class="form-group">
+    		<label for="actualStartTime" class="col-sm-2 control-label">实际开始时间（任务机时间）:</label>
+    		<div class="col-sm-4">
+    			<input type="text"  class="form-control" id="actualStartTime" name="actualStartTime" value="$!datetool.format('yyyy-MM-dd HH:mm:ss',$!data.actualStartTime)" autocomplete="off" />
+    		</div>
+    	</div>
+        <div class="form-group">
+            <label for="actualFinishTime" class="col-sm-2 control-label">实际完成时间（任务机时间）:</label>
+            <div class="col-sm-4">
+                <input type="text"  class="form-control" id="actualFinishTime" name="actualFinishTime" value="$!datetool.format('yyyy-MM-dd HH:mm:ss',$!data.actualFinishTime)" autocomplete="off" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="modifyTime" class="col-sm-2 control-label">最后修改时间:</label>
+            <div class="col-sm-4">
+                <input type="text"  class="form-control" id="modifyTime" name="modifyTime" value="$!datetool.format('yyyy-MM-dd HH:mm:ss',$!data.modifyTime)" autocomplete="off" />
+            </div>
+        </div>
+		<div class="form-group">
+    		<label for="result" class="col-sm-2 control-label">结果:</label>
+        	<div class="col-sm-4">
+    			<textarea  class="form-control col-sm-10" style="resize:none;" rows="10" id="result" name="result" autocomplete="off" />$!data.result</textarea>
+    		</div>
+        </div>
+		<div class="form-group">
+    		<label for="detail" class="col-sm-2 control-label">详细记录:</label>
+        	<div class="col-sm-4">
+    			<textarea  class="form-control col-sm-10" style="resize:none;" rows="10" id="detail" name="detail" autocomplete="off" />$!data.detail</textarea>
+    		</div>
+        </div>
+        <div class="form-group">
+            <label for="serverAddress" class="col-sm-2 control-label">服务端地址:</label>
+            <div class="col-sm-4">
+                <input type="text"  class="form-control" id="serverAddress" name="serverAddress" value="$!data.serverAddress" autocomplete="off"/>
+            </div>
+        </div>
+	</fieldset>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<a id="backBtn" href="javascript:;">
+				返回
+            </a>
+		</div>
+	</div>
+</form>
+	
+
+<script >
+	$("#type").change(function(){
+		if("ONCE" == $(this).val()){
+			$("#timeDiv").show();
+			$("#cronDiv").hide();
+		}else{
+			$("#timeDiv").hide();
+			$("#cronDiv").show();
+		}
+	});
+	
+	// 页面载入时,触发一次,因为回传已有值.
+	$("#type").change();
+	
+	$("#backBtn").click(function(){
+		history.go(-1);
+	});
+	
+</script>

@@ -1,0 +1,27 @@
+<nav class="navbar navbar-default navbar-inverse" role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <a class="navbar-brand" href="${ac.contextPath}/">goodjob</a>
+  </div>
+
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <ul id="navBarUl" class="nav navbar-nav">
+      <li id="jobInfoListLi" >
+		<a href="$ac.contextPath/jobinfo/list.htm">任务列表</a>
+	  </li>
+      <li id="jobInfoAddLi">
+		<a href="$ac.contextPath/jobinfo/toadd.htm">添加新任务</a>
+	  </li>
+	  <li id="jobSnapshotListLi">
+		<a href="$ac.contextPath/jobsnapshot/list.htm">任务执行信息列表</a>
+	  </li>
+	  <li id="jobInfoHistoryListLi"> 
+		<a href="$ac.contextPath/jobinfohistory/list.htm">历史任务列表</a>
+	  </li>
+	  <li id="monitorLi"> 
+		<a href="$ac.contextPath/monitor/index.htm">监控</a>
+	  </li>
+    </ul>
+  </div><!-- /.navbar-collapse -->
+</nav>

@@ -1,0 +1,211 @@
+<div class="page-header">
+  <h1><small>任务信息</small></h1>
+</div>
+
+<nav class="navbar navbar-default" role="navigation">
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <form id="searchForm" action="$ac.contextPath/jobinfo/list.htm" method="post" class="navbar-form navbar-left form-inline" role="search">
+      <div class="form-group">
+		<input id="jobInfoName" type="text" class="form-control" placeholder="Name" name="name" value="$!p.name" >
+      </div>
+	  &nbsp;&nbsp;&nbsp;
+      <div class="form-group">
+		<input id="jobInfoGroup" type="text" class="form-control" placeholder="Grop" name="group" value="$!p.group" >
+      </div>
+	  &nbsp;&nbsp;&nbsp;
+        <input type="hidden" id="page" name="page" value="$page"/>
+        <input type="hidden" id="rows" name="rows" value="$rows" />
+        <button type="button" class="btn btn-default" onclick="query(1)" >Search</button>
+    </form>
+  </div><!-- /.navbar-collapse -->
+</nav>
+
+<table class="table table-condensed table-bordered table-striped" style="text-align:center" >
+	<thead>
+	<tr style="text-align:center" >
+		<th style="text-align:center" >
+			ID
+        </th>
+		<th style="text-align:center" >
+			任务名称
+        </th>
+		<th style="text-align:center" >
+			任务分组
+        </th>
+		<th style="text-align:center" >
+			类型
+        </th>
+		<th style="text-align:center" >
+			时间 / Cron
+        </th>
+		<th style="text-align:center" >
+			目标服务器 URL
+        </th>
+		<th style="text-align:center" >
+			任务类全路径
+        </th>
+		<th style="text-align:center" >
+			激活
+        </th>
+		<th style="width:55px;text-align:center" >
+			详情
+        </th>
+		<th style="width:55px;text-align:center" >
+			编辑
+        </th>
+		<th style="width:55px;text-align:center" >
+			删除
+        </th>
+    </tr>
+	</thead>
+	#foreach($e in $data )
+	<tr >
+		<td >
+			$!e.id
+        </td>
+		<td >
+			$!e.name
+        </td>
+		<td >
+			$!e.group
+        </td>
+		<td >
+			$!e.type
+        </td>
+		<td >
+			#if("$!e.type" == "ONCE")
+				$!datetool.format('yyyy-MM-dd HH:mm:ss',$!e.time)
+			#else
+				$!e.cron
+			#end
+        </td>
+		<td >
+			$!e.urls
+        </td>
+		<td >
+			$!e.classPath
+        </td>
+		<td >
+			$!e.isActivity()
+        </td>
+		<td >
+			<a href="$ac.contextPath/jobinfo/view/${e.id}.htm">
+    			<button id="viewBtn" type="button" class="btn btn-default btn" onclick="view()">
+    				<span class="glyphicon glyphicon-eye-open"></span>
+    			</button>
+			</a>
+        </td>
+		<td >
+			<a href="$ac.contextPath/jobinfo/toedit/${e.id}.htm">
+			<button type="button" class="btn btn-primary btn">
+				<span class="glyphicon glyphicon-cog"></span>
+			</button>
+			</a>
+        </td>
+		<td >
+			<button type="button" class="btn btn-warning btn" value="$e.id" onclick="confirmDelete($e.id)">
+				<span class="glyphicon glyphicon-trash"></span>
+			</button>
+        </td>
+    </tr>
+	#end
+</table>
+
+
+<nav>
+    <ul class="pagination">
+        <!-- 上一页 -->
+        #if(${page} == 1)
+            <li class="disabled" >
+                <a aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        #else
+            <li>
+                <a href="#" onclick="query(${page} - 1)" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        #end
+        <!-- 某一页 -->
+        #foreach($i in [1 .. ${pages}] )
+            <li
+                #if($i == ${page})
+                        class="active"
+                #end
+                    ><a href="#" onclick="query(${i})" >$i</a>
+            </li>
+        #end
+        <!-- 下一页 -->
+        #if(${page} == ${pages})
+            <li class="disabled">
+                <a aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        #else
+            <li>
+                <a href="#" onclick="query(${page} + 1)" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        #end
+    </ul>
+</nav>
+
+<!-- 
+<ul class="pagination">
+	<li class="disabled">
+		<a href="#">&laquo;</a>
+	</li>
+	<li class="active">
+		<a href="#">1 <span class="sr-only">(current)</span></a>
+	</li>
+	<li >
+		<a href="#">2 <span class="sr-only">(current)</span></a>
+	</li>
+	<li>
+		<a href="#">&raquo;</a>
+	</li>
+</ul>
+-->
+
+#parse("/commons/alert.vm")
+#parse("/commons/confirm.vm")
+
+<script type="text/javascript">
+	// 隐藏成功提示.
+	$("#alert-success").hide();
+
+	var liArray = $("#navBarUl li");
+	jQuery.each(liArray, function(i,n){
+			$(n).removeClass("active");
+	});
+	$("#jobInfoListLi").addClass("active");
+
+	function confirmDelete(id){
+		showConfirm("删除任务信息","删除","Close","Submit",deleteJobInfo,id);
+	}
+
+	function deleteJobInfo(id){
+		// 发起删除请求
+		jQuery.getJSON("$ac.contextPath/jobinfo/delete/" + id, function(json){
+			if(json.status ==0){
+				$("#searchForm").submit();
+			}else{
+				showError(json.errorMsg);
+			}
+        });
+	}
+
+    function query(page){
+        if(page != null){
+            $("#page").val(page);
+        }
+        $("#searchForm").submit();
+    }
+
+
+</script>

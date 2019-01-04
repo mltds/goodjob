@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="JobInfoHistory">
+	<resultMap type="JobInfoHistory" id="JobInfoHistoryResultMap">
+		<id property="id" column="id"/>
+		<result property="jobInfoId" column="job_info_id" />
+		<result property="name" column="name" />
+		<result property="group" column="group" />
+		<result property="type" column="type" javaType="org.mltds.goodjob.common.dataobject.enums.JobInfoTypeEnum"/>
+		<result property="time" column="time" />
+		<result property="cron" column="cron" />
+		<result property="urls" column="urls" />
+		<result property="classPath" column="class_path" />
+		<result property="invokePolicy" column="invoke_policy" javaType="org.mltds.goodjob.common.dataobject.enums.JobInfoInvokePolicyEnum" />
+		<result property="isActivity" column="is_activity" />
+		<result property="desc" column="desc" />
+		<result property="createTime" column="create_time" />
+		<result property="modifyTime" column="modify_time" />
+		<result property="param" column="param" />
+		<result property="latestTriggerTime" column="latest_trigger_time"/>
+		<result property="latestServerAddress" column="latest_server_address"/>
+		<result property="ownerPhone" column="owner_phone" />
+		<result property="isCheckFinish" column="is_check_finish" />
+		<result property="checkFinishTime" column="check_finish_time" />
+	</resultMap>
+	
+	<insert id="insert" parameterType="JobInfoHistory">
+		insert into job_info_history (job_info_id, `name`, `group`, `type`, `time`, `cron`, `urls`, `class_path`, `invoke_policy`, `is_activity`, `desc`,
+		create_time, modify_time, `param`, `latest_trigger_time`, `latest_server_address`, `owner_phone`, `is_check_finish`, `check_finish_time`)
+		values
+		(
+		#{jobInfoId}, #{name}, #{group}, #{type}, #{time}, #{cron}, #{urls}, #{classPath}, #{invokePolicy}, #{isActivity}, #{desc},
+		#{createTime}, #{modifyTime}, #{param}, #{latestTriggerTime}, #{latestServerAddress}, #{ownerPhone}, #{isCheckFinish}, #{checkFinishTime}
+		)
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+	
+	<select id="getListByNameAndGroup" parameterType="map" resultMap="JobInfoHistoryResultMap">
+		select * from job_info_history
+		<where>
+			<if test="name != null">
+				and `name` = #{name}
+			</if>
+			<if test="group != null">
+				and `group` = #{group}
+			</if>
+		</where>
+		order by id desc
+		limit #{limit}
+	</select>
+    
+    <select id="findJobInfoHistoryById" resultMap="JobInfoHistoryResultMap">
+		select * from job_info_history where id = #{id}
+	</select>
+    
+</mapper>

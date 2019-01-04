@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="JobSnapshot">
+	<resultMap type="JobSnapshot" id="JobSnapshotResultMap">
+		<id property="id" column="id" />
+		<result property="jobInfoId" column="job_info_id" />
+		<result property="name" column="name" />
+		<result property="group" column="group" />
+		<result property="status" column="status" javaType="org.mltds.goodjob.common.dataobject.enums.JobSnapshotStatusEnum" />
+		<result property="ip" column="ip" />
+		<result property="url" column="url" />
+		<result property="result" column="result" />
+		<result property="timeConsume" column="time_consume" />
+		<result property="detail" column="detail" />
+		<result property="serverAddress" column="server_address" />
+		<result property="createTime" column="create_time" />
+		<result property="modifyTime" column="modify_time" />
+		<result property="actualStartTime" column="actual_start_time" />
+		<result property="actualFinishTime" column="actual_finish_time" />
+	</resultMap>
+
+	<select id="findById" resultMap="JobSnapshotResultMap">
+		select * from job_snapshot where id = #{id}
+	</select>
+
+	<select id="findByIdForUpdate" resultMap="JobSnapshotResultMap">
+		select * from job_snapshot where id = #{id} for update
+	</select>
+
+	<insert id="insert" parameterType="JobSnapshot">
+		insert into job_snapshot (`job_info_id`, `name`, `group`, `status`, `ip`, `url`, `result`, `time_consume`, `detail`, `server_address`, `create_time`, `modify_time`)
+		values(#{jobInfoId}, #{name}, #{group}, #{status}, #{ip}, #{url}, #{result}, #{timeConsume}, #{detail}, #{serverAddress}, #{createTime}, #{modifyTime})
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+
+	<update id="updateById" parameterType="JobSnapshot">
+		update job_snapshot
+		<set>
+			<if test="status != null" >
+				status = #{status},
+			</if>
+			<if test="ip != null" >
+				ip = #{ip},
+			</if>
+			<if test="url != null" >
+				url = #{url},
+			</if>
+			<if test="result != null" >
+				result = #{result},
+			</if>
+			<if test="timeConsume != null" >
+				time_consume = #{timeConsume},
+			</if>
+			<if test="detail != null" >
+				detail = #{detail},
+			</if>
+			<if test="serverAddress != null" >
+				server_address = #{serverAddress},
+			</if>
+			<if test="modifyTime != null" >
+				modify_time = #{modifyTime},
+			</if>
+			<if test="actualStartTime != null">
+				actual_start_time = #{actualStartTime},
+			</if>
+			<if test="actualFinishTime != null">
+				actual_finish_time = #{actualFinishTime},
+			</if>
+		</set>
+		<where>
+			id = #{id}
+		</where>
+	</update>
+
+
+	<update id="updateByIdAndConcatDetail" parameterType="JobSnapshot">
+		update job_snapshot
+		<set>
+			<if test="status != null" >
+				status = #{status},
+			</if>
+			<if test="ip != null" >
+				ip = #{ip},
+			</if>
+			<if test="url != null" >
+				url = #{url},
+			</if>
+			<if test="result != null" >
+				result = #{result},
+			</if>
+			<if test="timeConsume != null" >
+				time_consume = #{timeConsume},
+			</if>
+			<if test="detail != null" >
+				detail = concat(detail,#{detail}),
+			</if>
+			<if test="serverAddress != null" >
+				server_address = #{serverAddress},
+			</if>
+			<if test="modifyTime != null" >
+				modify_time = #{modifyTime},
+			</if>
+			<if test="actualStartTime != null">
+				actual_start_time = #{actualStartTime},
+			</if>
+			<if test="actualFinishTime != null">
+				actual_finish_time = #{actualFinishTime},
+			</if>
+		</set>
+		<where>
+			id = #{id}
+		</where>
+	</update>
+
+	<select id="findExecutingList" resultMap="JobSnapshotResultMap">
+		select * from job_snapshot where `status` = 'EXECUTING'
+	</select>
+
+	<select id="selectJobSnapshotList" parameterType="JobSnapshot" resultMap="JobSnapshotResultMap">
+		select * from job_snapshot
+		<where>
+		    1 = 1
+			<if test="id != null">
+				AND `id` = #{id}
+			</if>
+			<if test="jobInfoId != null">
+				AND `job_info_id` = #{jobInfoId}
+			</if>
+			<if test="name != null">
+				AND `name` = #{name}
+			</if>
+			<if test="group != null">
+				AND `group` = #{group}
+			</if>
+			<if test="status != null">
+				AND `status` = #{status}
+			</if>
+			<if test="ip != null">
+				AND ip = #{ip}
+			</if>
+			<if test="url != null">
+				AND url = #{url}
+			</if>
+			<if test="createTime != null">
+				AND create_time = #{createTime}
+			</if>
+			<if test="modifyTime != null">
+				AND modify_time = #{modifyTime}
+			</if>
+
+		</where>
+	</select>
+
+	<select id="getListByNameAndGroupAndStatus" parameterType="map" resultMap="JobSnapshotResultMap">
+		select * from job_snapshot where 1=1
+			<if test="name != null">
+				AND `name` = #{name}
+			</if>
+			<if test="group != null">
+				AND `group` = #{group}
+			</if>
+			<if test="status != null">
+				AND `status` = #{status}
+			</if>
+		order by id desc
+	</select>
+
+	<select id="getListByNameAndGroupAndStatusLimit" parameterType="map" resultMap="JobSnapshotResultMap">
+		select * from job_snapshot where 1=1
+			<if test="name != null">
+				AND `name` = #{name}
+			</if>
+			<if test="group != null">
+				AND `group` = #{group}
+			</if>
+			<if test="status != null">
+				AND `status` = #{status}
+			</if>
+		order by id desc
+		<if test="limit != null">
+		limit #{limit}
+		</if>
+	</select>
+
+	<insert id="findAndInsertIntoHistoryBeforeCreateTime" >
+		<![CDATA[
+		INSERT INTO job_snapshot_history 
+		( job_snapshot_id, `job_info_id`, `name`, `group`, `status`, `ip`, `url`, `result`, `time_consume`, `detail`, `server_address`, create_time, modify_time )
+		SELECT `id` AS job_snapshot_id, `job_info_id`, `name`, `group`, `status`, `ip`, `url`, `result`, `time_consume`, `detail`, `server_address`, create_time, modify_time
+		FROM job_snapshot WHERE create_time < #{createTime}
+		]]>
+	</insert>
+
+	<delete id="deleteBeforeCreateTime">
+		<![CDATA[
+		DELETE FROM job_snapshot WHERE create_time < #{createTime}
+		]]>
+	</delete>
+
+	<select id="findByParam" parameterType="org.mltds.goodjob.trigger.dao.query.JobSnapshotQuery" resultMap="JobSnapshotResultMap">
+
+		select * from job_snapshot
+		<trim prefix="where" prefixOverrides="AND">
+			<if test="id != null">
+				AND id = #{id}
+			</if>
+			<if test="jobInfoId != null">
+				AND job_info_id = #{jobInfoId}
+			</if>
+			<if test="name != null" >
+				AND `name` = #{name}
+			</if>
+			<if test="group != null" >
+				AND `group` = #{group}
+			</if>
+			<if test="status != null">
+				AND `status` = #{status}
+			</if>
+			<if test="actualFinishTimeGte != null">
+			<![CDATA[
+				AND `actual_finish_time` >= #{actualFinishTimeGte}
+			]]>
+			</if>
+			ORDER BY id DESC
+			<if test="offset != null and rows != null" >
+				LIMIT #{offset}, #{rows}
+			</if>
+		</trim>
+
+	</select>
+
+</mapper>

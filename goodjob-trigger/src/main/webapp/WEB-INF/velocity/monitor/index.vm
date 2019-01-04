@@ -1,0 +1,45 @@
+<h2><small>监控</small></h2>
+
+
+<style >
+	
+</style>
+
+#foreach($job in $jobMap.entrySet())
+	<table class="table table-condensed table-bordered table-striped" style="width:50%">
+			<tr >
+				<td style="width:20%" >
+						Name:
+				</td>
+				<td style="width:80%">
+						$job.getKey().getName()
+				</td >
+            </tr>
+			<tr>
+				<td style="width:20%">
+						Group:
+				</td>
+				<td style="width:80%">
+						$job.getKey().getGroup()  
+				</td>
+            </tr>
+			#foreach($nextFireTime in $job.getValue())
+			<tr >
+				<td style="width:20%">
+					nextFireTime:
+                </td>
+				<td style="width:80%">
+					$nextFireTime
+                </td>
+            </tr>
+			#end
+    </table>
+#end
+
+<script >
+	var liArray = $("#navBarUl li");
+	jQuery.each(liArray, function(i,n){
+			$(n).removeClass("active");
+	});
+	$("#monitorLi").addClass("active");
+</script>
